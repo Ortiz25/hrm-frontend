@@ -215,10 +215,7 @@ const StaffManagementModule = () => {
               className="fixed inset-0 bg-black bg-opacity-30"
               aria-hidden="true"
             ></div>
-            <div
-              className="fixed inset-0 flex items-center justify-center p-4"
-              onClick={() => setIsAddDialogOpen(false)}
-            >
+            <div className="fixed inset-0 flex items-center justify-center p-4">
               <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
                 <X
                   className="absolute top-o right-5"
