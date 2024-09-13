@@ -6,6 +6,7 @@ import { Menu } from "lucide-react";
 import { Input } from "../components/ui/input.jsx";
 import { useStore } from "../store/store.jsx";
 import { X } from "lucide-react";
+import { Label } from "../components/ui/label.jsx";
 
 // Dummy data for staff
 const initialStaffData = [
@@ -218,7 +219,7 @@ const StaffManagementModule = () => {
             <div className="fixed inset-0 flex items-center justify-center p-4">
               <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
                 <X
-                  className="absolute top-o right-5"
+                  className="absolute top-o right-5 hover:border-2 hover:border-gray-900"
                   onClick={() => setIsAddDialogOpen(false)}
                 />
 
@@ -230,13 +231,13 @@ const StaffManagementModule = () => {
                   {["name", "position", "department", "email", "phone"].map(
                     (field) => (
                       <div key={field} className="flex items-center space-x-4">
-                        <label
+                        <Label
                           htmlFor={field}
-                          className="text-right w-1/3 font-medium"
+                          className=" text-right w-1/4 font-medium"
                         >
                           {field.charAt(0).toUpperCase() + field.slice(1)}
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           id={field}
                           name={field}
                           value={newStaff[field]}
@@ -275,8 +276,12 @@ const StaffManagementModule = () => {
               aria-hidden="true"
             ></div>
             <div className="fixed inset-0 flex items-center justify-center p-4">
-              <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                <h3 className="text-lg font-semibold mb-4">
+              <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                <X
+                  className="absolute top-4 hover:border-2 hover:border-gray-900   right-5 "
+                  onClick={() => setIsEditDialogOpen(false)}
+                />
+                <h3 className="text-lg text-center font-semibold mb-4">
                   Edit Staff Member
                 </h3>
                 {editingStaff && (
@@ -289,7 +294,7 @@ const StaffManagementModule = () => {
                         >
                           <label
                             htmlFor={`edit-${field}`}
-                            className="text-right w-1/3 font-medium"
+                            className="text-right w-1/5 font-medium"
                           >
                             {field.charAt(0).toUpperCase() + field.slice(1)}
                           </label>

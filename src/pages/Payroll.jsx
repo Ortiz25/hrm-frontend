@@ -20,7 +20,10 @@ import { Label } from "../components/ui/label.jsx";
 import SidebarLayout from "../components/layout/sidebarLayout.jsx";
 import { useStore } from "../store/store.jsx";
 import Modal from "../components/ui/modal.jsx";
+import { generateAndDownloadExcel } from "../util/generateXL.jsx";
+import { motion } from "framer-motion";
 
+// Dummy data for payroll entries
 // Dummy data for payroll entries
 const initialPayrollData = [
   {
@@ -64,7 +67,6 @@ const initialPayrollData = [
     deductions: 800,
   },
 ];
-
 const PayrollModule = () => {
   const [payrollData, setPayrollData] = useState(initialPayrollData);
   const [searchTerm, setSearchTerm] = useState("");
@@ -170,7 +172,7 @@ const PayrollModule = () => {
                   <Input
                     type="text"
                     placeholder="Search by Employee name or Position"
-                    className="focus:border-blue-400 w-full p-2 border border-gray-300 rounded-md"
+                    className=" w-full p-2 border border-gray-300 rounded-md"
                     value={searchTerm}
                     onChange={handleSearchInputChange}
                   />
@@ -181,10 +183,12 @@ const PayrollModule = () => {
                       <tr className="bg-gray-100">
                         <th className="border p-2 text-left">Name</th>
                         <th className="border p-2 text-left">Position</th>
-                        <th className="border p-2 text-left">Salary ($)</th>
-                        <th className="border p-2 text-left">Bonus ($)</th>
-                        <th className="border p-2 text-left">Deductions ($)</th>
-                        <th className="border p-2 text-left">Net Pay ($)</th>
+                        <th className="border p-2 text-left">Salary (KES)</th>
+                        <th className="border p-2 text-left">Bonus (KES)</th>
+                        <th className="border p-2 text-left">
+                          Deductions (KES)
+                        </th>
+                        <th className="border p-2 text-left">Net Pay (KES)</th>
                         <th className="border p-2 text-left">Actions</th>
                       </tr>
                     </thead>
@@ -223,6 +227,12 @@ const PayrollModule = () => {
                     </tbody>
                   </table>
                 </div>
+                <Button
+                  onClick={() => generateAndDownloadExcel(initialPayrollData)}
+                  className="bg-blue-500 text-white mt-4"
+                >
+                  Download XL
+                </Button>
               </CardContent>
             </Card>
 
@@ -322,10 +332,14 @@ const PayrollModule = () => {
         {currentEntry && (
           <div>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Edit Payroll Entry</h2>
-              <Button variant="ghost" onClick={() => setEditModalOpen(false)}>
-                <X />
-              </Button>
+              <h2 className="text-xl text-center font-semibold">
+                Edit Payroll Entry
+              </h2>
+
+              <X
+                onClick={() => setEditModalOpen(false)}
+                className="hover:border-2 hover:border-gray-900"
+              />
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -359,7 +373,7 @@ const PayrollModule = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="editSalary">Salary ($)</Label>
+                <Label htmlFor="editSalary">Salary (KES)</Label>
                 <Input
                   id="editSalary"
                   name="salary"
@@ -375,7 +389,7 @@ const PayrollModule = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="editBonus">Bonus ($)</Label>
+                <Label htmlFor="editBonus">Bonus (KES)</Label>
                 <Input
                   id="editBonus"
                   name="bonus"
@@ -391,7 +405,7 @@ const PayrollModule = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="editDeductions">Deductions ($)</Label>
+                <Label htmlFor="editDeductions">Deductions (KES)</Label>
                 <Input
                   id="editDeductions"
                   name="deductions"

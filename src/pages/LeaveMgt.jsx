@@ -164,7 +164,7 @@ const LeaveManagementModule = () => {
                       <th className="border p-2 text-left">Start Date</th>
                       <th className="border p-2 text-left">End Date</th>
                       <th className="border p-2 text-left">Status</th>
-                      <th className="border p-2 text-left">Action</th>
+                      <th className="border p-2 text-left w-1/6">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -177,15 +177,15 @@ const LeaveManagementModule = () => {
                         <td className="border p-2">{entry.status}</td>
                         <td className="border p-2">
                           {entry.status === "Pending" && (
-                            <div className="space-x-2">
+                            <div className="flex  items-center  space-x-2">
                               <Button
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+                                className="bg-green-500 hover:bg-green-600 text-white px-2 py-2 rounded"
                                 onClick={() => handleApprove(entry.id)}
                               >
                                 Approve
                               </Button>
                               <Button
-                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
                                 onClick={() => handleReject(entry.id)}
                               >
                                 Reject

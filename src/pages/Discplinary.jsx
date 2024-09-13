@@ -169,6 +169,7 @@ const DisciplinaryModule = () => {
                       <th className="border p-2 text-left">Date</th>
                       <th className="border p-2 text-left">Reason</th>
                       <th className="border p-2 text-left">Status</th>
+                      <th className="border p-2 text-left">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -187,7 +188,7 @@ const DisciplinaryModule = () => {
                                   className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
                                   onClick={() => handleInProgress(entry.id)}
                                 >
-                                  Update In Progress
+                                  In Progress
                                 </Button>
                               )}
                               {entry.status === "In Progress" && (
