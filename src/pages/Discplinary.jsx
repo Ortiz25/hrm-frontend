@@ -51,6 +51,13 @@ const DisciplinaryModule = () => {
   );
   const [selectedAction, setSelectedAction] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newAction, setNewAction] = useState({
+    employeeName: "",
+    actionType: "",
+    date: "",
+    reason: "",
+    status: "Open",
+  });
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -72,6 +79,28 @@ const DisciplinaryModule = () => {
         entry.id === id ? { ...entry, status: newStatus } : entry
       )
     );
+  };
+
+  const handleNewActionChange = (e) => {
+    const { name, value } = e.target;
+    setNewAction((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleNewActionSubmit = (e) => {
+    e.preventDefault();
+    const id = disciplinaryData.length + 1;
+    const newActionEntry = {
+      id,
+      ...newAction,
+    };
+    setDisciplinaryData((prev) => [...prev, newActionEntry]);
+    setNewAction({
+      employeeName: "",
+      actionType: "",
+      date: "",
+      reason: "",
+      status: "Open",
+    });
   };
 
   const filteredData = disciplinaryData.filter(
@@ -152,7 +181,58 @@ const DisciplinaryModule = () => {
               <CardTitle>Record Disciplinary Action</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Form for adding a new disciplinary action (same as before) */}
+              <form onSubmit={handleNewActionSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="employeeName">Employee Name</Label>
+                    <Input
+                      id="employeeName"
+                      name="employeeName"
+                      value={newAction.employeeName}
+                      onChange={handleNewActionChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="actionType">Action Type</Label>
+                    <select
+                      id="actionType"
+                      name="actionType"
+                      className="border-4 rounded-md p-2 w-full"
+                      value={newAction.actionType}
+                      onChange={handleNewActionChange}
+                      required
+                    >
+                      <option value="">Select Action Type</option>
+                      <option value="Warning">Warning</option>
+                      <option value="Suspension">Suspension</option>
+                      <option value="Termination">Termination</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="date">Date</Label>
+                    <Input
+                      id="date"
+                      name="date"
+                      type="date"
+                      value={newAction.date}
+                      onChange={handleNewActionChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="reason">Reason</Label>
+                    <Input
+                      id="reason"
+                      name="reason"
+                      value={newAction.reason}
+                      onChange={handleNewActionChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <Button type="submit">Submit Disciplinary Action</Button>
+              </form>
             </CardContent>
           </Card>
         </div>
