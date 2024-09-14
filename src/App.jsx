@@ -8,6 +8,8 @@ import LeaveManagementModule from "./pages/LeaveMgt.jsx";
 import DisciplinaryModule from "./pages/Discplinary.jsx";
 import AdminSettingsModule from "./pages/AdminSet.jsx";
 import StaffManagementModule from "./pages/StaffReq.jsx";
+import Onboarding from "./pages/Onboarding.jsx";
+import HRDocumentModule from "./pages/Hrdocuments.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,14 @@ const router = createBrowserRouter([
   {
     path: "/staff",
     element: <StaffManagementModule />,
+  },
+  {
+    path: "/onboarding",
+    element: <Onboarding />,
+  },
+  {
+    path: "/hrdocs",
+    element: <HRDocumentModule />,
   },
 ]);
 

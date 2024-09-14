@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import {
   Card,
@@ -11,48 +11,41 @@ import { Input } from "../components/ui/input.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { useStore } from "../store/store.jsx";
 import SidebarLayout from "../components/layout/sidebarLayout.jsx";
+import { Dialog } from "@headlessui/react";
 
-// Dummy data for leave entries
+// Sample data for leave entries
 const initialLeaveData = [
   {
     id: 1,
     employeeName: "John Doe",
     leaveType: "Annual",
-    startDate: "2024-09-15",
-    endDate: "2024-09-20",
-    status: "Approved",
+    startDate: "2024-09-01",
+    endDate: "2024-09-05",
+    status: "Pending",
   },
   {
     id: 2,
     employeeName: "Jane Smith",
     leaveType: "Sick",
-    startDate: "2024-09-18",
-    endDate: "2024-09-19",
+    startDate: "2024-09-10",
+    endDate: "2024-09-12",
     status: "Pending",
   },
   {
     id: 3,
-    employeeName: "Bob Johnson",
+    employeeName: "Emily Johnson",
     leaveType: "Personal",
-    startDate: "2024-09-22",
-    endDate: "2024-09-23",
+    startDate: "2024-09-15",
+    endDate: "2024-09-20",
     status: "Approved",
   },
   {
     id: 4,
-    employeeName: "Alice Brown",
+    employeeName: "Michael Brown",
     leaveType: "Annual",
     startDate: "2024-09-25",
-    endDate: "2024-09-29",
+    endDate: "2024-09-30",
     status: "Rejected",
-  },
-  {
-    id: 5,
-    employeeName: "Charlie Davis",
-    leaveType: "Sick",
-    startDate: "2024-09-30",
-    endDate: "2024-10-01",
-    status: "Pending",
   },
 ];
 
@@ -69,22 +62,12 @@ const LeaveManagementModule = () => {
     endDate: "",
     status: "Pending",
   });
+  const [selectedLeave, setSelectedLeave] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
   };
-
-  useEffect(() => {
-    changeModule("Leave Management");
-  }, []);
-
-  // Filter the leave data based on the search term
-  const filteredLeaveData = leaveData.filter(
-    (entry) =>
-      entry.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.leaveType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.status.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -108,23 +91,40 @@ const LeaveManagementModule = () => {
     });
   };
 
-  // Handle leave request approval
   const handleApprove = (id) => {
     setLeaveData((prevData) =>
       prevData.map((entry) =>
         entry.id === id ? { ...entry, status: "Approved" } : entry
       )
     );
+    handleCloseModal();
   };
 
-  // Handle leave request rejection
   const handleReject = (id) => {
     setLeaveData((prevData) =>
       prevData.map((entry) =>
         entry.id === id ? { ...entry, status: "Rejected" } : entry
       )
     );
+    handleCloseModal();
   };
+
+  const handleOpenModal = (leave) => {
+    setSelectedLeave(leave);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedLeave(null);
+  };
+
+  const filteredLeaveData = leaveData.filter(
+    (entry) =>
+      entry.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.leaveType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.status.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="flex h-screen">
@@ -177,18 +177,12 @@ const LeaveManagementModule = () => {
                         <td className="border p-2">{entry.status}</td>
                         <td className="border p-2">
                           {entry.status === "Pending" && (
-                            <div className="flex  items-center  space-x-2">
+                            <div className="flex items-center space-x-2">
                               <Button
                                 className="bg-green-500 hover:bg-green-600 text-white px-2 py-2 rounded"
-                                onClick={() => handleApprove(entry.id)}
+                                onClick={() => handleOpenModal(entry)}
                               >
-                                Approve
-                              </Button>
-                              <Button
-                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                                onClick={() => handleReject(entry.id)}
-                              >
-                                Reject
+                                Action
                               </Button>
                             </div>
                           )}
@@ -263,6 +257,52 @@ const LeaveManagementModule = () => {
           </Card>
         </div>
       </div>
+
+      {/* Modal for leave action */}
+      <Dialog open={isModalOpen} onClose={handleCloseModal}>
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="max-w-sm bg-white p-6 rounded">
+            <Dialog.Title className="text-lg font-bold mb-4">
+              Leave Details
+            </Dialog.Title>
+            {selectedLeave && (
+              <div>
+                <p>
+                  <strong>Employee Name:</strong> {selectedLeave.employeeName}
+                </p>
+                <p>
+                  <strong>Leave Type:</strong> {selectedLeave.leaveType}
+                </p>
+                <p>
+                  <strong>Start Date:</strong> {selectedLeave.startDate}
+                </p>
+                <p>
+                  <strong>End Date:</strong> {selectedLeave.endDate}
+                </p>
+                <p>
+                  <strong>Status:</strong> {selectedLeave.status}
+                </p>
+                <div className="mt-4 flex justify-end space-x-2">
+                  <Button
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                    onClick={() => handleApprove(selectedLeave.id)}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    className="bg-red-500 hover:bg-red-600 text-white"
+                    onClick={() => handleReject(selectedLeave.id)}
+                  >
+                    Reject
+                  </Button>
+                  <Button onClick={handleCloseModal}>Close</Button>
+                </div>
+              </div>
+            )}
+          </Dialog.Panel>
+        </div>
+      </Dialog>
     </div>
   );
 };

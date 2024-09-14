@@ -154,7 +154,7 @@ const StaffManagementModule = () => {
                 onClick={() => setIsAddDialogOpen(true)}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
               >
-                Add New Staff
+                Request New Staff
               </Button>
             </div>
             <div className="m-4 ">

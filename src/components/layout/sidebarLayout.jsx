@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Users,
+  Scale,
   DollarSign,
   Calendar,
   FileText,
@@ -9,18 +9,22 @@ import {
   LogOut,
   LayoutDashboard,
   Settings,
+  ArrowRightLeft,
 } from "lucide-react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, redirect, useNavigate } from "react-router-dom";
 import "./tooltip.css"; //
 
 const SidebarLayout = ({ activeModule, setActiveModule }) => {
+  const navigate = useNavigate();
   const [hoveredModule, setHoveredModule] = useState(null);
   const modules = [
     { name: "Dashboard", icon: LayoutDashboard, route: "dashboard" },
     { name: "Payroll", icon: DollarSign, route: "payroll" },
     { name: "Leave Management", icon: Calendar, route: "leave" },
-    { name: "Disciplinary Management", icon: FileText, route: "disciplinary" },
+    { name: "Disciplinary Management", icon: Scale, route: "disciplinary" },
     { name: "Staff Requisition", icon: UserPlus, route: "staff" },
+    { name: "ON/OFF Boarding", icon: ArrowRightLeft, route: "onboarding" },
+    { name: "HR Documents", icon: FileText, route: "hrdocs" },
     { name: "Admin Settings", icon: Settings, route: "admin" },
   ];
 
