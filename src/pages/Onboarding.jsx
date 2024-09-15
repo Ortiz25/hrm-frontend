@@ -11,6 +11,8 @@ import { Label } from "../components/ui/label.jsx";
 import SidebarLayout from "../components/layout/sidebarLayout.jsx";
 import { useStore } from "../store/store.jsx";
 import { Menu } from "lucide-react";
+import { ProgressBar } from "../components/ui/progressBar.jsx";
+import { Step1, Step2, Step3, Step4 } from "../components/ui/progressBar.jsx";
 
 const Onboarding = () => {
   const dummyEmployees = [
@@ -35,9 +37,38 @@ const Onboarding = () => {
       company: "HealthPlus",
       role: "employee",
     },
+    {
+      id: 25,
+      username: "brian",
+      email: "brian@example.com",
+      company: "HealthPlus",
+      role: "admin",
+    },
+    {
+      id: 33,
+      username: "Tom",
+      email: "tom@example.com",
+      company: "TechCorp",
+      role: "employee",
+    },
+    {
+      id: 34,
+      username: "Lisa",
+      email: "lisa@example.com",
+      company: "TechCorp",
+      role: "employee",
+    },
+    {
+      id: 23,
+      username: "Duke",
+      email: "dike@example.com",
+      company: "HealthPlus",
+      role: "employee",
+    },
   ];
 
   const [employees, setEmployees] = useState(dummyEmployees);
+  const [searchTerm, setSearchTerm] = useState("");
   const [newEmployee, setNewEmployee] = useState({
     username: "",
     email: "",
@@ -47,6 +78,23 @@ const Onboarding = () => {
   const [employeeIdToRemove, setEmployeeIdToRemove] = useState("");
   const { activeModule, changeModule, discplinaryAction } = useStore();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [currentEntry, setCurrentEntry] = useState(null);
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    department: "",
+    position: "",
+    hire_date: "",
+    salary: "",
+    bonus: "",
+    deductions: { tax: "", insurance: "", other: "" },
+    company: "",
+    policiesAgreed: false,
+    email: "",
+    phoneNumber: "",
+    status: "",
+  });
 
   const handleAddEmployee = (e) => {
     e.preventDefault();
@@ -54,6 +102,17 @@ const Onboarding = () => {
     setEmployees([...employees, { ...newEmployee, id: newId }]);
     setNewEmployee({ username: "", email: "", company: "", role: "employee" });
   };
+  const handleSearchInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredEmployees = employees.filter(
+    (entry) =>
+      entry.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.role.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleRemoveEmployee = (e) => {
     e.preventDefault();
@@ -65,6 +124,45 @@ const Onboarding = () => {
     setEmployeeIdToRemove("");
   };
 
+  const steps = [
+    {
+      component: (
+        <Step1
+          nextStep={() => setStep(step + 1)}
+          formData={formData}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      component: (
+        <Step2
+          nextStep={() => setStep(step + 1)}
+          prevStep={() => setStep(step - 1)}
+          formData={formData}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      component: (
+        <Step3
+          nextStep={() => setStep(step + 1)}
+          prevStep={() => setStep(step - 1)}
+          formData={formData}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      component: (
+        <Step4 prevStep={() => setStep(step - 1)} formData={formData} />
+      ),
+    },
+  ];
+
+  const progress = Math.floor((step / steps.length) * 100);
+
   return (
     <div className="flex h-screen">
       {sidebarOpen && (
@@ -73,96 +171,24 @@ const Onboarding = () => {
           setActiveModule={changeModule}
         />
       )}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto ">
         <div className="p-4 bg-white shadow-md flex justify-between items-center">
           <Button variant="ghost" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <Menu />
           </Button>
           <h1 className="text-xl font-bold">{activeModule}</h1>
         </div>
-        <div className="p-4 space-y-6">
-          {/* Onboarding Section */}
-          <Card className="shadow-2xl">
-            <CardHeader>
-              <CardTitle>Onboard Employee</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleAddEmployee} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                      id="username"
-                      name="username"
-                      value={newEmployee.username}
-                      onChange={(e) =>
-                        setNewEmployee({
-                          ...newEmployee,
-                          username: e.target.value,
-                        })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={newEmployee.email}
-                      onChange={(e) =>
-                        setNewEmployee({
-                          ...newEmployee,
-                          email: e.target.value,
-                        })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="company">Company</Label>
-                    <Input
-                      id="company"
-                      name="company"
-                      value={newEmployee.company}
-                      onChange={(e) =>
-                        setNewEmployee({
-                          ...newEmployee,
-                          company: e.target.value,
-                        })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Role</Label>
-                    <select
-                      id="role"
-                      name="role"
-                      className="border-4 rounded-md p-2 w-full"
-                      value={newEmployee.role}
-                      onChange={(e) =>
-                        setNewEmployee({ ...newEmployee, role: e.target.value })
-                      }
-                    >
-                      <option value="employee">Employee</option>
-                      <option value="admin">Admin</option>
-                      <option value="super_admin">Super Admin</option>
-                    </select>
-                  </div>
-                </div>
-                <Button type="submit" className="mt-4">
-                  Add Employee
-                </Button>
-              </form>
-            </CardContent>
+        <div className="p-6 space-y-8">
+          <Card className="shadow-2xl p-4">
+            <h2 className="text-2xl font-bold mb-4">Employee Onboarding</h2>
+            <ProgressBar progress={progress} />
+            <div className="mt-8">{steps[step - 1].component}</div>
           </Card>
 
           {/* Offboarding Section */}
           <Card className="shadow-2xl">
             <CardHeader>
-              <CardTitle>Offboard Employee</CardTitle>
+              <CardTitle className="text-2xl">Offboard Employee</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleRemoveEmployee} className="space-y-4">
@@ -186,9 +212,17 @@ const Onboarding = () => {
           {/* Employees List */}
           <Card className="shadow-2xl">
             <CardHeader>
-              <CardTitle>Current Employees</CardTitle>
+              <CardTitle className="text-2xl">Current Employees</CardTitle>
             </CardHeader>
             <CardContent>
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  placeholder="Search by employee name, action type, reason, or status"
+                  value={searchTerm}
+                  onChange={handleSearchInputChange}
+                />
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
@@ -201,7 +235,7 @@ const Onboarding = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {employees.map((employee) => (
+                    {filteredEmployees.map((employee) => (
                       <tr key={employee.id} className="hover:bg-gray-50">
                         <td className="border p-2">{employee.id}</td>
                         <td className="border p-2">{employee.username}</td>
