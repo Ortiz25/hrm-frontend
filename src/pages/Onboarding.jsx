@@ -13,60 +13,75 @@ import { useStore } from "../store/store.jsx";
 import { Menu } from "lucide-react";
 import { ProgressBar } from "../components/ui/progressBar.jsx";
 import { Step1, Step2, Step3, Step4 } from "../components/ui/progressBar.jsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog.jsx";
+
+const dummyEmployees = [
+  {
+    id: 21,
+    username: "johndoe",
+    email: "johndoe@example.com",
+    company: "TechCorp",
+    role: "admin",
+    status: "active",
+  },
+  {
+    id: 22,
+    username: "janedoe",
+    email: "janedoe@example.com",
+    company: "TechCorp",
+    role: "employee",
+    status: "active",
+  },
+  {
+    id: 23,
+    username: "alice",
+    email: "alice@example.com",
+    company: "HealthPlus",
+    role: "employee",
+    status: "active",
+  },
+  {
+    id: 25,
+    username: "brian",
+    email: "brian@example.com",
+    company: "HealthPlus",
+    role: "admin",
+    status: "active",
+  },
+  {
+    id: 33,
+    username: "Tom",
+    email: "tom@example.com",
+    company: "TechCorp",
+    role: "employee",
+    status: "active",
+  },
+  {
+    id: 34,
+    username: "Lisa",
+    email: "lisa@example.com",
+    company: "TechCorp",
+    role: "employee",
+    status: "active",
+  },
+  {
+    id: 23,
+    username: "Duke",
+    email: "dike@example.com",
+    company: "HealthPlus",
+    role: "employee",
+    status: "active",
+  },
+];
 
 const Onboarding = () => {
-  const dummyEmployees = [
-    {
-      id: 21,
-      username: "johndoe",
-      email: "johndoe@example.com",
-      company: "TechCorp",
-      role: "admin",
-    },
-    {
-      id: 22,
-      username: "janedoe",
-      email: "janedoe@example.com",
-      company: "TechCorp",
-      role: "employee",
-    },
-    {
-      id: 23,
-      username: "alice",
-      email: "alice@example.com",
-      company: "HealthPlus",
-      role: "employee",
-    },
-    {
-      id: 25,
-      username: "brian",
-      email: "brian@example.com",
-      company: "HealthPlus",
-      role: "admin",
-    },
-    {
-      id: 33,
-      username: "Tom",
-      email: "tom@example.com",
-      company: "TechCorp",
-      role: "employee",
-    },
-    {
-      id: 34,
-      username: "Lisa",
-      email: "lisa@example.com",
-      company: "TechCorp",
-      role: "employee",
-    },
-    {
-      id: 23,
-      username: "Duke",
-      email: "dike@example.com",
-      company: "HealthPlus",
-      role: "employee",
-    },
-  ];
-
   const [employees, setEmployees] = useState(dummyEmployees);
   const [searchTerm, setSearchTerm] = useState("");
   const [newEmployee, setNewEmployee] = useState({
@@ -75,6 +90,8 @@ const Onboarding = () => {
     company: "",
     role: "employee",
   });
+  const [employeeToRemove, setEmployeeToRemove] = useState(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [employeeIdToRemove, setEmployeeIdToRemove] = useState("");
   const { activeModule, changeModule, discplinaryAction } = useStore();
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -114,16 +131,29 @@ const Onboarding = () => {
       entry.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleRemoveEmployee = (e) => {
-    e.preventDefault();
-    setEmployees(
-      employees.filter(
-        (employee) => employee.id !== parseInt(employeeIdToRemove)
-      )
-    );
-    setEmployeeIdToRemove("");
+  const handleEmployeeIdChange = (e) => {
+    const id = parseInt(e.target.value);
+    setEmployeeIdToRemove(e.target.value);
+    const employee = employees.find((emp) => emp.id === id);
+    setEmployeeToRemove(employee || null);
   };
 
+  const handleRemoveEmployee = (e) => {
+    e.preventDefault();
+    if (employeeToRemove) {
+      setShowConfirmDialog(true);
+    }
+  };
+
+  const confirmRemoveEmployee = () => {
+    setEmployees(
+      employees.filter((employee) => employee.id !== employeeToRemove.id)
+    );
+    setEmployeeIdToRemove("");
+    setEmployeeToRemove(null);
+    setShowConfirmDialog(false);
+    alert("Offboarding Complete!");
+  };
   const steps = [
     {
       component: (
@@ -193,16 +223,67 @@ const Onboarding = () => {
             <CardContent>
               <form onSubmit={handleRemoveEmployee} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="employeeId">Employee ID to Remove</Label>
+                  <Label htmlFor="employeeId">
+                    Enter Employee ID to Remove:
+                  </Label>
                   <Input
                     id="employeeId"
                     name="employeeId"
                     value={employeeIdToRemove}
-                    onChange={(e) => setEmployeeIdToRemove(e.target.value)}
+                    onChange={handleEmployeeIdChange}
                     required
                   />
                 </div>
-                <Button type="submit" className="mt-4">
+                {employeeToRemove && (
+                  <div className="mt-4 p-6 bg-gray-100 rounded-md">
+                    <h3 className="font-bold text-xl border-b-4 pb-4">
+                      Employee Details:
+                    </h3>
+                    <div className="m-2">
+                      <span className="text-lg font-semibold mr-2">
+                        Employee ID:
+                      </span>
+
+                      <span className="text-lg font-bold italic text-red-500">
+                        {employeeToRemove.id}
+                      </span>
+                    </div>
+                    <div className="m-2">
+                      <span className="text-lg font-semibold mr-2">Name:</span>
+
+                      <span className="text-lg font-normal italic">
+                        {employeeToRemove.username}
+                      </span>
+                    </div>
+                    <div className="m-2">
+                      <span className="text-lg font-semibold mr-2">
+                        Email:{" "}
+                      </span>
+                      <span className="text-lg font-normal italic">
+                        {employeeToRemove.email}
+                      </span>
+                    </div>
+                    <div className="m-2">
+                      <span className="text-lg font-semibold mr-2">
+                        Company:{" "}
+                      </span>
+                      <span className="text-lg font-normal italic">
+                        {employeeToRemove.company}
+                      </span>
+                    </div>
+                    <div className="m-2">
+                      <span className="text-lg font-semibold mr-2">Role:</span>
+                      <span className="text-lg font-normal italic">
+                        {employeeToRemove.role}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                <Button
+                  type="submit"
+                  className="mt-4"
+                  disabled={!employeeToRemove}
+                >
                   Remove Employee
                 </Button>
               </form>
@@ -249,6 +330,50 @@ const Onboarding = () => {
               </div>
             </CardContent>
           </Card>
+          {/* Confirmation Dialog */}
+          <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+            <DialogContent className="bg-white">
+              <DialogHeader>
+                <DialogTitle className="text-2xl">
+                  Confirm Employee Removal:{" "}
+                </DialogTitle>
+                <DialogDescription>
+                  <span className="text-lg text-red-500">
+                    Are you sure you want to remove the following employee?
+                  </span>
+                  <br />
+                  <span className="text-lg font-semibold mr-2">Name:</span>{" "}
+                  <span className="font-medium italic text-lg">
+                    {" "}
+                    {employeeToRemove?.username}
+                  </span>
+                  <br />
+                  <span className="text-lg font-semibold mr-2">
+                    Email:
+                  </span>{" "}
+                  <span className="font-medium italic text-lg">
+                    {employeeToRemove?.email}
+                  </span>
+                  <br />
+                  <span className="text-lg font-semibold mr-2">Role:</span>{" "}
+                  <span className="font-medium italic text-lg">
+                    {employeeToRemove?.role}
+                  </span>
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  variant="default"
+                  onClick={() => setShowConfirmDialog(false)}
+                >
+                  Cancel
+                </Button>
+                <Button variant="destructive" onClick={confirmRemoveEmployee}>
+                  Confirm Removal
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

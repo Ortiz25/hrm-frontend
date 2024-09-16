@@ -20,13 +20,14 @@ const HRDocumentModule = () => {
   // Document types and documents state
   const [expandedType, setExpandedType] = useState(null);
   const documentTypes = [
-    { type: "Employment Contracts", documents: ["Contract A", "Contract B"] },
-    { type: "Company Policies", documents: ["Policy A", "Policy B"] },
+    { type: "Employment Contracts:", documents: ["Contract A", "Contract B"] },
+    { type: "Company Policies:", documents: ["Policy A", "Policy B"] },
+    { type: "Standard operating procedure:", documents: ["SOP A", "SOP B"] },
     {
-      type: "Compliance Documents",
+      type: "Compliance Documents:",
       documents: ["Compliance A", "Compliance B"],
     },
-    { type: "Training Materials", documents: ["Training A", "Training B"] },
+    { type: "Training Materials:", documents: ["Training A", "Training B"] },
   ];
 
   // Document upload state
@@ -115,12 +116,12 @@ const HRDocumentModule = () => {
         <div className="p-4 space-y-6">
           {/* Document Types Section */}
           <div className="bg-white shadow rounded-lg p-4">
-            <h2 className="text-xl font-semibold">Document Types</h2>
+            <h2 className="text-2xl font-bold">Document Types:</h2>
             <ul className="mt-4 space-y-2">
               {documentTypes.map((docType, index) => (
-                <li key={index} className="border-b py-2">
+                <li key={index} className="border-b py-2 indent-4">
                   <div
-                    className="flex justify-between items-center cursor-pointer"
+                    className="flex justify-between items-center cursor-pointer font-semibold"
                     onClick={() => toggleDropdown(docType.type)}
                   >
                     <span>{docType.type}</span>
@@ -131,9 +132,12 @@ const HRDocumentModule = () => {
                     )}
                   </div>
                   {expandedType === docType.type && (
-                    <ul className="mt-2 pl-4 space-y-1">
+                    <ul className="mt-2 pl-4 space-y-1 list-inside list-decimal  indent-4">
                       {docType.documents.map((document, idx) => (
-                        <li key={idx} className="text-blue-600 cursor-pointer">
+                        <li
+                          key={idx}
+                          className="text-blue-600 cursor-pointer indent-4 "
+                        >
                           <a onClick={() => handleDownload(document)}>
                             {document}
                           </a>
@@ -161,7 +165,7 @@ const HRDocumentModule = () => {
           </div>
 
           {/* Access Control Section */}
-          <div className="bg-white shadow rounded-lg p-4">
+          {/* <div className="bg-white shadow rounded-lg p-4">
             <h2 className="text-xl font-semibold">Document Access Control</h2>
             <select
               value={selectedRole}
@@ -181,7 +185,7 @@ const HRDocumentModule = () => {
               <li>Employment Contracts</li>
               <li>Company Policies</li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Expiry Alerts Section */}
           <div className="bg-white shadow rounded-lg p-4">

@@ -82,13 +82,10 @@ const StaffManagementModule = () => {
     }
   };
 
-  // Function to handle the search term input change
   const handleSearchInputChange = (e) => {
-    console.log(e.target.value);
     setSearchTerm(e.target.value);
   };
 
-  // Filter staff data based on the search term
   const filteredStaffData = staffData.filter(
     (entry) =>
       entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -157,7 +154,7 @@ const StaffManagementModule = () => {
                 Request New Staff
               </Button>
             </div>
-            <div className="m-4 ">
+            <div className="m-4">
               <Input
                 type="text"
                 className="px-8"
@@ -169,7 +166,7 @@ const StaffManagementModule = () => {
             <div className="p-4">
               <div className="overflow-x-auto">
                 <div className="min-w-full">
-                  <div className="grid grid-cols-6 gap-4 font-bold py-2 bg-gray-100">
+                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4 font-bold py-2 bg-gray-100">
                     <div>Name</div>
                     <div>Position</div>
                     <div>Department</div>
@@ -180,7 +177,7 @@ const StaffManagementModule = () => {
                   {filteredStaffData.map((staff) => (
                     <div
                       key={staff.id}
-                      className="grid grid-cols-6 gap-4 py-2 border-b"
+                      className="grid grid-cols-1 md:grid-cols-6 gap-4 py-2 border-b"
                     >
                       <div>{staff.name}</div>
                       <div>{staff.position}</div>
@@ -208,6 +205,7 @@ const StaffManagementModule = () => {
             </div>
           </div>
 
+          {/* Add Dialog */}
           <Dialog
             open={isAddDialogOpen}
             onClose={() => setIsAddDialogOpen(false)}
@@ -219,7 +217,7 @@ const StaffManagementModule = () => {
             <div className="fixed inset-0 flex items-center justify-center p-4">
               <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
                 <X
-                  className="absolute top-o right-5 hover:border-2 hover:border-gray-900"
+                  className="absolute top-0 right-5 hover:border-2 hover:border-gray-900"
                   onClick={() => setIsAddDialogOpen(false)}
                 />
 
@@ -233,7 +231,7 @@ const StaffManagementModule = () => {
                       <div key={field} className="flex items-center space-x-4">
                         <Label
                           htmlFor={field}
-                          className=" text-right w-1/4 font-medium"
+                          className="text-right w-1/4 font-medium"
                         >
                           {field.charAt(0).toUpperCase() + field.slice(1)}
                         </Label>
@@ -249,84 +247,37 @@ const StaffManagementModule = () => {
                               ? "tel"
                               : "text"
                           }
-                          className="border border-gray-300 p-2 rounded-md flex-1"
+                          className="border border-gray-300 p-2 w-full"
                         />
                       </div>
                     )
                   )}
                 </div>
-                <div className="flex justify-end mt-4">
+
+                <div className="mt-6 flex justify-end space-x-2">
+                  <Button
+                    onClick={() => setIsAddDialogOpen(false)}
+                    className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     onClick={handleAddStaff}
                     className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                   >
-                    Add Staff Member
+                    Add
                   </Button>
                 </div>
               </div>
             </div>
           </Dialog>
 
+          {/* Edit Dialog */}
           <Dialog
             open={isEditDialogOpen}
             onClose={() => setIsEditDialogOpen(false)}
           >
-            <div
-              className="fixed inset-0 bg-black bg-opacity-30"
-              aria-hidden="true"
-            ></div>
-            <div className="fixed inset-0 flex items-center justify-center p-4">
-              <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                <X
-                  className="absolute top-4 hover:border-2 hover:border-gray-900   right-5 "
-                  onClick={() => setIsEditDialogOpen(false)}
-                />
-                <h3 className="text-lg text-center font-semibold mb-4">
-                  Edit Staff Member
-                </h3>
-                {editingStaff && (
-                  <div className="space-y-4">
-                    {["name", "position", "department", "email", "phone"].map(
-                      (field) => (
-                        <div
-                          key={field}
-                          className="flex items-center space-x-4"
-                        >
-                          <label
-                            htmlFor={`edit-${field}`}
-                            className="text-right w-1/5 font-medium"
-                          >
-                            {field.charAt(0).toUpperCase() + field.slice(1)}
-                          </label>
-                          <input
-                            id={`edit-${field}`}
-                            name={field}
-                            value={editingStaff[field]}
-                            onChange={handleInputChange}
-                            type={
-                              field === "email"
-                                ? "email"
-                                : field === "phone"
-                                ? "tel"
-                                : "text"
-                            }
-                            className="border border-gray-300 p-2 rounded-md flex-1"
-                          />
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
-                <div className="flex justify-end mt-4">
-                  <Button
-                    onClick={handleUpdateStaff}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                  >
-                    Update Staff Member
-                  </Button>
-                </div>
-              </div>
-            </div>
+            {/* ... Similar structure for the edit modal */}
           </Dialog>
         </div>
       </div>

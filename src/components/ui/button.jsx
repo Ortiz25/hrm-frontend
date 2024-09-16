@@ -9,6 +9,8 @@ export const Button = ({
   const variantClasses = {
     default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
     ghost: "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
+    destructive:
+      "bg-red-600 text-white hover:bg-red-700 focus:hover:ring-red-500",
   };
 
   return (

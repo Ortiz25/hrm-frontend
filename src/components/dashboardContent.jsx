@@ -52,6 +52,20 @@ const mockData = [
     disciplinary: 0,
     requisitions: 4,
   },
+  {
+    month: "May",
+    payroll: 530000,
+    leaves: 40,
+    disciplinary: 0,
+    requisitions: 4,
+  },
+  {
+    month: "June",
+    payroll: 520000,
+    leaves: 40,
+    disciplinary: 2,
+    requisitions: 4,
+  },
 ];
 
 const DashboardCard = ({ title, value, icon: Icon }) => (

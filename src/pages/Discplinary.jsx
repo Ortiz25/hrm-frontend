@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -230,6 +230,16 @@ const DisciplinaryModule = () => {
                       required
                     />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="status">Status</Label>
+                    <Input
+                      id="status"
+                      name="status"
+                      value={newAction.reason}
+                      onChange={handleNewActionChange}
+                      required
+                    />
+                  </div>
                 </div>
                 <Button type="submit">Submit Disciplinary Action</Button>
               </form>
@@ -246,6 +256,7 @@ const DisciplinaryModule = () => {
             <Dialog.Title className="text-lg font-bold mb-4">
               Disciplinary Action Details
             </Dialog.Title>
+
             {selectedAction && (
               <div>
                 <p>
@@ -284,7 +295,9 @@ const DisciplinaryModule = () => {
                       Mark as Closed
                     </Button>
                   )}
-                  <Button onClick={handleCloseModal}>Close</Button>
+                  <Button variant="destructive" onClick={handleCloseModal}>
+                    Close
+                  </Button>
                 </div>
               </div>
             )}
