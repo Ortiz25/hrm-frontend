@@ -207,12 +207,6 @@ const EmployeeDashboard = () => {
                 <CardTitle className="text-2xl">Employee Dashboard</CardTitle>
               </CardHeader>
               <CardContent>
-                <Button
-                  onClick={() => generatePayslipPDF(employeeData.payroll[0])}
-                >
-                  Generate Test Payslip
-                </Button>
-
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <span className="text-xl font-semibold mr-2">Name:</span>
