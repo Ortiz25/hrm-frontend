@@ -326,12 +326,12 @@ const EmployeeDashboard = () => {
                       ))}
                     </tbody>
                   </table>
-                  <div className="mt-4 flex justify-end">
+                  {/* <div className="mt-4 flex justify-end">
                     <Button>
                       <DownloadIcon className="mr-2 h-4 w-4" />
                       Export to Excel
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
               </CardContent>
             </Card>
