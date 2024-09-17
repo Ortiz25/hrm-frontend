@@ -68,6 +68,58 @@ export const Step1 = ({ nextStep, formData, setFormData }) => (
           required
         />
       </div>
+      <div className="space-y-2">
+        <Label htmlFor="phoneNumber">Bank Account:</Label>
+        <Input
+          type="text"
+          name="bankAccount"
+          className="mt-1 block w-full p-2 border rounded"
+          value={formData.phoneNumber}
+          onChange={(e) =>
+            setFormData({ ...formData, phoneNumber: e.target.value })
+          }
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="phoneNumber">KRA Pin:</Label>
+        <Input
+          type="text"
+          name="kraPin"
+          className="mt-1 block w-full p-2 border rounded"
+          value={formData.phoneNumber}
+          onChange={(e) =>
+            setFormData({ ...formData, phoneNumber: e.target.value })
+          }
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="phoneNumber">NHIF Membership No:</Label>
+        <Input
+          type="text"
+          name="nhifNo"
+          className="mt-1 block w-full p-2 border rounded"
+          value={formData.phoneNumber}
+          onChange={(e) =>
+            setFormData({ ...formData, phoneNumber: e.target.value })
+          }
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="phoneNumber">NSSF Membership No:</Label>
+        <Input
+          type="text"
+          name="nssf"
+          className="mt-1 block w-full p-2 border rounded"
+          value={formData.phoneNumber}
+          onChange={(e) =>
+            setFormData({ ...formData, phoneNumber: e.target.value })
+          }
+          required
+        />
+      </div>
     </div>
     <Button onClick={nextStep} className="mt-5">
       Next
@@ -144,7 +196,7 @@ export const Step3 = ({ nextStep, prevStep, formData, setFormData }) => (
       <Input
         name="salary"
         type="number"
-        placeholder="Salary"
+        placeholder="Gross Salary"
         value={formData.salary}
         onChange={(e) =>
           setFormData({ ...formData, department: e.target.value })

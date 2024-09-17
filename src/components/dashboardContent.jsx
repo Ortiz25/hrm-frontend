@@ -87,7 +87,7 @@ const DashboardContent = () => (
       <DashboardCard title="Total Employees" value="1,234" icon={Users} />
       <DashboardCard
         title="Total Payroll"
-        value="$2,130,000"
+        value="KES 2,130,000"
         icon={DollarSign}
       />
       <DashboardCard title="Leave Requests" value="190" icon={Calendar} />
@@ -108,7 +108,7 @@ const DashboardContent = () => (
             <Bar
               yAxisId="left"
               dataKey="payroll"
-              name="Payroll ($)"
+              name="Payroll (KES)"
               fill="#8884d8"
             />
             <Bar

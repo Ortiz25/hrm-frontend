@@ -11,6 +11,7 @@ import {
   Settings,
   ArrowRightLeft,
   UserCircle,
+  Logs,
 } from "lucide-react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import "./tooltip.css";
@@ -21,6 +22,11 @@ const SidebarLayout = ({ activeModule, setActiveModule }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const modules = [
     { name: "Dashboard", icon: LayoutDashboard, route: "dashboard" },
+    {
+      name: "Employee Dashboard",
+      icon: Logs,
+      route: "employeedashboard",
+    },
     { name: "Payroll", icon: DollarSign, route: "payroll" },
     { name: "Leave Management", icon: Calendar, route: "leave" },
     { name: "Disciplinary Management", icon: Scale, route: "disciplinary" },

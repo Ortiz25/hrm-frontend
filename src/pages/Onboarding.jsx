@@ -27,6 +27,9 @@ const dummyEmployees = [
     id: 21,
     username: "johndoe",
     email: "johndoe@example.com",
+    phone: "123-456-7890",
+    department: "IT",
+    position: "Senior Developer",
     company: "TechCorp",
     role: "admin",
     status: "active",
@@ -35,6 +38,9 @@ const dummyEmployees = [
     id: 22,
     username: "janedoe",
     email: "janedoe@example.com",
+    phone: "987-654-3210",
+    department: "HR",
+    position: "HR Manager",
     company: "TechCorp",
     role: "employee",
     status: "active",
@@ -43,6 +49,9 @@ const dummyEmployees = [
     id: 23,
     username: "alice",
     email: "alice@example.com",
+    phone: "555-123-4567",
+    department: "Marketing",
+    position: "Marketing Specialist",
     company: "HealthPlus",
     role: "employee",
     status: "active",
@@ -51,6 +60,9 @@ const dummyEmployees = [
     id: 25,
     username: "brian",
     email: "brian@example.com",
+    phone: "222-333-4444",
+    department: "Finance",
+    position: "Financial Analyst",
     company: "HealthPlus",
     role: "admin",
     status: "active",
@@ -59,6 +71,9 @@ const dummyEmployees = [
     id: 33,
     username: "Tom",
     email: "tom@example.com",
+    phone: "777-888-9999",
+    department: "IT",
+    position: "Junior Developer",
     company: "TechCorp",
     role: "employee",
     status: "active",
@@ -67,14 +82,20 @@ const dummyEmployees = [
     id: 34,
     username: "Lisa",
     email: "lisa@example.com",
+    phone: "333-222-1111",
+    department: "IT",
+    position: "System Administrator",
     company: "TechCorp",
     role: "employee",
     status: "active",
   },
   {
-    id: 23,
+    id: 24,
     username: "Duke",
-    email: "dike@example.com",
+    email: "duke@example.com",
+    phone: "444-555-6666",
+    department: "Operations",
+    position: "Operations Manager",
     company: "HealthPlus",
     role: "employee",
     status: "active",
@@ -127,8 +148,10 @@ const Onboarding = () => {
     (entry) =>
       entry.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       entry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
       entry.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.role.toLowerCase().includes(searchTerm.toLowerCase())
+      entry.id.toString().includes(searchTerm)
   );
 
   const handleEmployeeIdChange = (e) => {
@@ -209,6 +232,50 @@ const Onboarding = () => {
           <h1 className="text-xl font-bold">{activeModule}</h1>
         </div>
         <div className="p-6 space-y-8">
+          {/* Employees List */}
+          <Card className="shadow-2xl">
+            <CardHeader>
+              <CardTitle className="text-2xl">Current Employees</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  placeholder="Search by employee name, action type, reason, or status"
+                  value={searchTerm}
+                  onChange={handleSearchInputChange}
+                />
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border p-2 text-left">ID</th>
+                      <th className="border p-2 text-left">Username</th>
+                      <th className="border p-2 text-left">Email</th>
+                      <th className="border p-2 text-left">position</th>
+                      <th className="border p-2 text-left">Department</th>
+                      <th className="border p-2 text-left">Company</th>
+                      <th className="border p-2 text-left">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredEmployees.map((employee) => (
+                      <tr key={employee.id} className="hover:bg-gray-50">
+                        <td className="border p-2">{employee.id}</td>
+                        <td className="border p-2">{employee.username}</td>
+                        <td className="border p-2">{employee.email}</td>
+                        <td className="border p-2">{employee.position}</td>
+                        <td className="border p-2">{employee.department}</td>
+                        <td className="border p-2">{employee.company}</td>
+                        <td className="border p-2">{employee.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
           <Card className="shadow-2xl p-4">
             <h2 className="text-2xl font-bold mb-4">Employee Onboarding</h2>
             <ProgressBar progress={progress} />
@@ -216,7 +283,7 @@ const Onboarding = () => {
           </Card>
 
           {/* Offboarding Section */}
-          <Card className="shadow-2xl">
+          <Card className="shadow-2xl m-4">
             <CardHeader>
               <CardTitle className="text-2xl">Offboard Employee</CardTitle>
             </CardHeader>
@@ -290,46 +357,6 @@ const Onboarding = () => {
             </CardContent>
           </Card>
 
-          {/* Employees List */}
-          <Card className="shadow-2xl">
-            <CardHeader>
-              <CardTitle className="text-2xl">Current Employees</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-4">
-                <Input
-                  type="text"
-                  placeholder="Search by employee name, action type, reason, or status"
-                  value={searchTerm}
-                  onChange={handleSearchInputChange}
-                />
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border p-2 text-left">ID</th>
-                      <th className="border p-2 text-left">Username</th>
-                      <th className="border p-2 text-left">Email</th>
-                      <th className="border p-2 text-left">Company</th>
-                      <th className="border p-2 text-left">Role</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredEmployees.map((employee) => (
-                      <tr key={employee.id} className="hover:bg-gray-50">
-                        <td className="border p-2">{employee.id}</td>
-                        <td className="border p-2">{employee.username}</td>
-                        <td className="border p-2">{employee.email}</td>
-                        <td className="border p-2">{employee.company}</td>
-                        <td className="border p-2">{employee.role}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
           {/* Confirmation Dialog */}
           <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
             <DialogContent className="bg-white">
@@ -355,9 +382,18 @@ const Onboarding = () => {
                     {employeeToRemove?.email}
                   </span>
                   <br />
-                  <span className="text-lg font-semibold mr-2">Role:</span>{" "}
+                  <span className="text-lg font-semibold mr-2">
+                    Department:
+                  </span>{" "}
                   <span className="font-medium italic text-lg">
-                    {employeeToRemove?.role}
+                    {employeeToRemove?.department}
+                  </span>
+                  <br />
+                  <span className="text-lg font-semibold mr-2">
+                    Position:
+                  </span>{" "}
+                  <span className="font-medium italic text-lg">
+                    {employeeToRemove?.position}
                   </span>
                 </DialogDescription>
               </DialogHeader>

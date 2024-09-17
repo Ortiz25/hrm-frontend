@@ -11,6 +11,7 @@ import StaffManagementModule from "./pages/StaffReq.jsx";
 import Onboarding from "./pages/Onboarding.jsx";
 import HRDocumentModule from "./pages/Hrdocuments.jsx";
 import ProfilePage from "./pages/profilePage.jsx";
+import EmployeeDashboard from "./pages/EmployeeDash.jsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <HRDashboard />,
+  },
+  {
+    path: "/employeedashboard",
+    element: <EmployeeDashboard />,
   },
   {
     path: "/payroll",

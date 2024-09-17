@@ -43,6 +43,7 @@ const initialPayrollData = [
     overtimeRate: 550,
     leave: 1,
     joinDate: "2019-06-20",
+    paymentMonth: "2024-09",
   },
   {
     id: 3,
@@ -59,6 +60,7 @@ const initialPayrollData = [
     overtimeRate: 450,
     leave: 3,
     joinDate: "2020-03-10",
+    paymentMonth: "2024-09",
   },
   {
     id: 4,
@@ -75,6 +77,7 @@ const initialPayrollData = [
     overtimeRate: 480,
     leave: 2,
     joinDate: "2021-02-05",
+    paymentMonth: "2024-09",
   },
   {
     id: 5,
@@ -91,6 +94,7 @@ const initialPayrollData = [
     overtimeRate: 600,
     leave: 1,
     joinDate: "2018-11-15",
+    paymentMonth: "2024-09",
   },
   {
     id: 6,
@@ -107,6 +111,7 @@ const initialPayrollData = [
     overtimeRate: 520,
     leave: 2,
     joinDate: "2020-08-30",
+    paymentMonth: "2024-09",
   },
   {
     id: 7,
@@ -123,6 +128,7 @@ const initialPayrollData = [
     overtimeRate: 400,
     leave: 3,
     joinDate: "2019-04-12",
+    paymentMonth: "2024-09",
   },
   // Add more entries as needed
 ];
@@ -267,7 +273,7 @@ const PayrollModule = () => {
           <div className="p-4 space-y-6">
             <Card className="shadow-xl">
               <CardHeader>
-                <CardTitle>Payroll Information</CardTitle>
+                <CardTitle className="text-2xl">Payroll Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -357,6 +363,7 @@ const PayrollModule = () => {
                   <Input
                     id="editName"
                     name="name"
+                    disabled
                     value={currentEntry.name}
                     onChange={(e) =>
                       setCurrentEntry((prev) => ({
@@ -371,6 +378,7 @@ const PayrollModule = () => {
                   <Label htmlFor="editPosition">Position</Label>
                   <Input
                     id="editPosition"
+                    disabled
                     name="position"
                     value={currentEntry.position}
                     onChange={(e) =>
@@ -530,6 +538,7 @@ const PayrollModule = () => {
                   <Input
                     id="editJoinDate"
                     name="joinDate"
+                    disabled
                     type="date"
                     value={currentEntry.joinDate}
                     onChange={(e) =>

@@ -144,7 +144,7 @@ const LeaveManagementModule = () => {
         <div className="p-4 space-y-6">
           <Card className="shadow-2xl">
             <CardHeader>
-              <CardTitle>Leave Management</CardTitle>
+              <CardTitle className="text-2xl">Leave Management</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
@@ -197,7 +197,7 @@ const LeaveManagementModule = () => {
 
           <Card className="shadow-2xl">
             <CardHeader>
-              <CardTitle>Request Leave</CardTitle>
+              <CardTitle className="text-2xl">Request Leave</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
