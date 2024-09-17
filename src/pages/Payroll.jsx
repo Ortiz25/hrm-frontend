@@ -26,13 +26,25 @@ import Modal from "../components/ui/modal";
 import { generateAndDownloadExcel } from "../util/generateXL";
 import { motion } from "framer-motion";
 
-// Dummy data for payroll entries (expanded with more fields)
 const initialPayrollData = [
   {
     id: 2,
     name: "Alice Smith",
+    email: "alice.smith@example.com",
+    phone: "123-456-7891",
+    bankDetails: "Bank B - 2345678901",
+    kraPin: "B234567890C",
+    nhif: "NHIF234567",
+    nssf: "NSSF890123",
     position: "Senior Developer",
-    salary: 85000,
+    department: "Engineering",
+    hireDate: "2019-06-20",
+    company: "TechCorp",
+    grossSalary: 85000,
+    paye: 17000,
+    insurance: 2500,
+    nhifDeduction: 1000,
+    nssfDeduction: 500,
     bonus: 7000,
     deductions: {
       tax: 17000,
@@ -48,8 +60,21 @@ const initialPayrollData = [
   {
     id: 3,
     name: "Bob Johnson",
+    email: "bob.johnson@example.com",
+    phone: "123-456-7892",
+    bankDetails: "Bank C - 3456789012",
+    kraPin: "C345678901D",
+    nhif: "NHIF345678",
+    nssf: "NSSF901234",
     position: "Data Analyst",
-    salary: 65000,
+    department: "Data Science",
+    hireDate: "2020-03-10",
+    company: "DataCorp",
+    grossSalary: 65000,
+    paye: 13000,
+    insurance: 1800,
+    nhifDeduction: 800,
+    nssfDeduction: 400,
     bonus: 4000,
     deductions: {
       tax: 13000,
@@ -65,8 +90,21 @@ const initialPayrollData = [
   {
     id: 4,
     name: "Emily Brown",
+    email: "emily.brown@example.com",
+    phone: "123-456-7893",
+    bankDetails: "Bank D - 4567890123",
+    kraPin: "D456789012E",
+    nhif: "NHIF456789",
+    nssf: "NSSF012345",
     position: "UX Designer",
-    salary: 70000,
+    department: "Design",
+    hireDate: "2021-02-05",
+    company: "DesignCorp",
+    grossSalary: 70000,
+    paye: 14000,
+    insurance: 1900,
+    nhifDeduction: 900,
+    nssfDeduction: 450,
     bonus: 6000,
     deductions: {
       tax: 14000,
@@ -82,8 +120,21 @@ const initialPayrollData = [
   {
     id: 5,
     name: "Michael Davis",
+    email: "michael.davis@example.com",
+    phone: "123-456-7894",
+    bankDetails: "Bank E - 5678901234",
+    kraPin: "E567890123F",
+    nhif: "NHIF567890",
+    nssf: "NSSF123456",
     position: "Product Manager",
-    salary: 90000,
+    department: "Product",
+    hireDate: "2018-11-15",
+    company: "ProductCorp",
+    grossSalary: 90000,
+    paye: 18000,
+    insurance: 2800,
+    nhifDeduction: 1200,
+    nssfDeduction: 700,
     bonus: 8000,
     deductions: {
       tax: 18000,
@@ -99,8 +150,21 @@ const initialPayrollData = [
   {
     id: 6,
     name: "Sophia Wilson",
+    email: "sophia.wilson@example.com",
+    phone: "123-456-7895",
+    bankDetails: "Bank F - 6789012345",
+    kraPin: "F678901234G",
+    nhif: "NHIF678901",
+    nssf: "NSSF234567",
     position: "Frontend Developer",
-    salary: 80000,
+    department: "Engineering",
+    hireDate: "2020-08-30",
+    company: "TechCorp",
+    grossSalary: 80000,
+    paye: 16000,
+    insurance: 2200,
+    nhifDeduction: 1100,
+    nssfDeduction: 550,
     bonus: 5500,
     deductions: {
       tax: 16000,
@@ -116,8 +180,21 @@ const initialPayrollData = [
   {
     id: 7,
     name: "David Martinez",
+    email: "david.martinez@example.com",
+    phone: "123-456-7896",
+    bankDetails: "Bank G - 7890123456",
+    kraPin: "G789012345H",
+    nhif: "NHIF789012",
+    nssf: "NSSF345678",
     position: "Quality Assurance",
-    salary: 60000,
+    department: "Quality Assurance",
+    hireDate: "2019-04-12",
+    company: "QualityCorp",
+    grossSalary: 60000,
+    paye: 12000,
+    insurance: 1600,
+    nhifDeduction: 800,
+    nssfDeduction: 350,
     bonus: 3000,
     deductions: {
       tax: 12000,
@@ -153,6 +230,17 @@ const PayrollModule = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentEntry, setCurrentEntry] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [employees] = useState(initialPayrollData);
+
+  const calculateNetSalary = (employee) => {
+    return (
+      employee.grossSalary -
+      employee.paye -
+      employee.insurance -
+      employee.nhifDeduction -
+      employee.nssfDeduction
+    );
+  };
 
   useEffect(() => {
     changeModule("Payroll");
@@ -250,6 +338,33 @@ const PayrollModule = () => {
     return grossPay - totalDeductions;
   };
 
+  const generatePayslip = (employee) => {
+    const netSalary = calculateNetSalary(employee);
+    return `
+      Payslip for ${employee.name}
+      ------------------------------
+      Gross Salary: $${employee.grossSalary}
+      PAYE: $${employee.paye}
+      Insurance: $${employee.insurance}
+      NHIF: $${employee.nhifDeduction}
+      NSSF: $${employee.nssfDeduction}
+      ------------------------------
+      Net Salary: $${netSalary}
+    `;
+  };
+
+  const handlePrintPayslip = (employee) => {
+    const payslip = generatePayslip(employee);
+    // In a real application, you'd send this to a printer or generate a PDF
+    console.log(payslip);
+    alert("Payslip printed! Check the console for details.");
+  };
+
+  const handleMakePayments = () => {
+    // In a real application, this would trigger the payment process
+    alert("Salary payments initiated for all employees!");
+  };
+
   return (
     <>
       <div className="flex h-screen">
@@ -270,7 +385,7 @@ const PayrollModule = () => {
             </Button>
             <h1 className="text-xl font-bold">{activeModule}</h1>
           </div>
-          <div className="p-4 space-y-6">
+          <div className="p-8 space-y-6">
             <Card className="shadow-xl">
               <CardHeader>
                 <CardTitle className="text-2xl">Payroll Information</CardTitle>
@@ -282,7 +397,9 @@ const PayrollModule = () => {
                       <tr className="bg-gray-100">
                         <th className="border p-2 text-left">Name</th>
                         <th className="border p-2 text-left">Position</th>
-                        <th className="border p-2 text-left">Salary (KES)</th>
+                        <th className="border p-2 text-left">
+                          Gross Salary (KES)
+                        </th>
                         <th className="border p-2 text-left">Bonus (KES)</th>
                         <th className="border p-2 text-left">
                           Deductions (KES)
@@ -299,7 +416,7 @@ const PayrollModule = () => {
                           <td className="border p-2">{entry.name}</td>
                           <td className="border p-2">{entry.position}</td>
                           <td className="border p-2">
-                            {entry.salary.toLocaleString()}
+                            {entry.grossSalary.toLocaleString()}
                           </td>
                           <td className="border p-2">
                             {entry.bonus.toLocaleString()}
@@ -335,6 +452,73 @@ const PayrollModule = () => {
                   <Download className="mr-2" />
                   Download Excel
                 </Button>
+              </CardContent>
+            </Card>
+            <Card className="shadow-2xl mb-4">
+              <CardHeader>
+                <CardTitle>Payroll Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <Button onClick={handleMakePayments}>
+                    Make Salary Payments
+                  </Button>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border p-2 text-left">Name</th>
+                          <th className="border p-2 text-left">
+                            Gross Salary (KES)
+                          </th>
+                          <th className="border p-2 text-left">PAYE (KES)</th>
+                          <th className="border p-2 text-left">
+                            Insurance (KES)
+                          </th>
+                          <th className="border p-2 text-left">NHIF (KES)</th>
+                          <th className="border p-2 text-left">NSSF (kes)</th>
+                          <th className="border p-2 text-left">
+                            Net Salary (kes)
+                          </th>
+                          <th className="border p-2 text-left">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {employees.map((employee) => (
+                          <tr key={employee.id} className="hover:bg-gray-50">
+                            <td className="border p-2">{employee.name}</td>
+                            <td className="border p-2">
+                              {employee.grossSalary.toLocaleString()}
+                            </td>
+                            <td className="border p-2">
+                              {employee.paye.toLocaleString()}
+                            </td>
+                            <td className="border p-2">
+                              {employee.insurance.toLocaleString()}
+                            </td>
+                            <td className="border p-2">
+                              {employee.nhifDeduction.toLocaleString()}
+                            </td>
+                            <td className="border p-2">
+                              {employee.nssfDeduction.toLocaleString()}
+                            </td>
+                            <td className="border p-2">
+                              {calculateNetSalary(employee).toLocaleString()}
+                            </td>
+                            <td className="border p-2">
+                              <Button
+                                onClick={() => handlePrintPayslip(employee)}
+                                size="sm"
+                              >
+                                Print Payslip
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
