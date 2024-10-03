@@ -9,6 +9,8 @@ import {
   X,
   Download,
   Filter,
+  UserCheck,
+  UsersRound,
 } from "lucide-react";
 import {
   Card,
@@ -25,7 +27,6 @@ import { useStore } from "../store/store";
 import Modal from "../components/ui/modal";
 import { generateAndDownloadExcel } from "../util/generateXL";
 import { motion } from "framer-motion";
-
 const initialPayrollData = [
   {
     id: 2,
@@ -216,6 +217,10 @@ const PayrollModule = () => {
   const [filterCriteria, setFilterCriteria] = useState("all");
   const { activeModule, changeModule } = useStore();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [paymentType, setPaymentType] = useState("");
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
   const [newEntry, setNewEntry] = useState({
     name: "",
     position: "",
@@ -360,11 +365,37 @@ const PayrollModule = () => {
     alert("Payslip printed! Check the console for details.");
   };
 
+  // const handleMakePayments = () => {
+  //   // In a real application, this would trigger the payment process
+  //   alert("Salary payments initiated for all employees!");
+  // };
+
   const handleMakePayments = () => {
-    // In a real application, this would trigger the payment process
-    alert("Salary payments initiated for all employees!");
+    setPaymentModalOpen(true);
   };
 
+  const handlePaymentTypeSelect = (type) => {
+    setPaymentType(type);
+  };
+
+  const handleEmployeeSelect = (event) => {
+    const employeeId = parseInt(event.target.value);
+    const employee = employees.find((emp) => emp.id === employeeId);
+    setSelectedEmployee(employee);
+  };
+
+  const handleProcessPayment = () => {
+    if (paymentType === "mass") {
+      // Process mass payment logic here
+      alert("Mass salary payment processed for all employees!");
+    } else if (paymentType === "individual" && selectedEmployee) {
+      // Process individual payment logic here
+      alert(`Salary payment processed for ${selectedEmployee.name}!`);
+    }
+    setPaymentModalOpen(false);
+    setPaymentType("");
+    setSelectedEmployee(null);
+  };
   return (
     <>
       <div className="flex h-screen">
@@ -463,7 +494,7 @@ const PayrollModule = () => {
                   <Button onClick={handleMakePayments}>
                     Make Salary Payments
                   </Button>
-                  <div className="overflow-x-auto">
+                  {/* <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                       <thead>
                         <tr className="bg-gray-100">
@@ -517,7 +548,7 @@ const PayrollModule = () => {
                         ))}
                       </tbody>
                     </table>
-                  </div>
+                  </div> */}
                 </div>
               </CardContent>
             </Card>
@@ -746,6 +777,136 @@ const PayrollModule = () => {
             </div>
           </div>
         )}
+      </Modal>
+      <Modal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+      >
+        <motion.div
+          className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="bg-white rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto"
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+          >
+            <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold">
+                  Process Salary Payment
+                </h2>
+                <Button
+                  onClick={() => setPaymentModalOpen(false)}
+                  variant="ghost"
+                  className="p-1"
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+              </div>
+            </div>
+            <div className="px-6 py-4 space-y-4">
+              <div className="space-y-2">
+                <Label>Select Payment Type</Label>
+                <div className="flex space-x-4">
+                  <motion.button
+                    className={`flex-1 p-4 rounded-lg border-2 ${
+                      paymentType === "mass"
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200"
+                    } flex flex-col items-center justify-center transition-all duration-200`}
+                    onClick={() => handlePaymentTypeSelect("mass")}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <UsersRound
+                      size={32}
+                      className={
+                        paymentType === "mass"
+                          ? "text-blue-500"
+                          : "text-gray-500"
+                      }
+                    />
+                    <span
+                      className={`mt-2 font-medium ${
+                        paymentType === "mass"
+                          ? "text-blue-500"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      Mass Payment
+                    </span>
+                  </motion.button>
+                  <motion.button
+                    className={`flex-1 p-4 rounded-lg border-2 ${
+                      paymentType === "individual"
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-200"
+                    } flex flex-col items-center justify-center transition-all duration-200`}
+                    onClick={() => handlePaymentTypeSelect("individual")}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <UserCheck
+                      size={32}
+                      className={
+                        paymentType === "individual"
+                          ? "text-green-500"
+                          : "text-gray-500"
+                      }
+                    />
+                    <span
+                      className={`mt-2 font-medium ${
+                        paymentType === "individual"
+                          ? "text-green-500"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      Individual Payment
+                    </span>
+                  </motion.button>
+                </div>
+              </div>
+              {paymentType === "individual" && (
+                <motion.div
+                  className="space-y-2"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
+                  <Label htmlFor="employeeSelect">Select Employee</Label>
+                  <Select
+                    id="employeeSelect"
+                    value={selectedEmployee ? selectedEmployee.id : ""}
+                    onChange={handleEmployeeSelect}
+                  >
+                    <option value="">Select an employee</option>
+                    {employees.map((employee) => (
+                      <option key={employee.id} value={employee.id}>
+                        {employee.name}
+                      </option>
+                    ))}
+                  </Select>
+                </motion.div>
+              )}
+            </div>
+            <div className="sticky bottom-0 bg-white z-10 px-6 py-4 border-t">
+              <Button
+                onClick={handleProcessPayment}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-colors duration-200"
+                disabled={
+                  !paymentType ||
+                  (paymentType === "individual" && !selectedEmployee)
+                }
+              >
+                Process Payment
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
       </Modal>
     </>
   );
