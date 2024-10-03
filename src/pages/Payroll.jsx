@@ -217,9 +217,6 @@ const PayrollModule = () => {
   const [filterCriteria, setFilterCriteria] = useState("all");
   const { activeModule, changeModule } = useStore();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
-  const [paymentType, setPaymentType] = useState("");
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const [newEntry, setNewEntry] = useState({
     name: "",
@@ -236,6 +233,9 @@ const PayrollModule = () => {
   const [currentEntry, setCurrentEntry] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [employees] = useState(initialPayrollData);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [paymentType, setPaymentType] = useState("");
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const calculateNetSalary = (employee) => {
     return (
@@ -358,24 +358,13 @@ const PayrollModule = () => {
     `;
   };
 
-  const handlePrintPayslip = (employee) => {
-    const payslip = generatePayslip(employee);
-    // In a real application, you'd send this to a printer or generate a PDF
-    console.log(payslip);
-    alert("Payslip printed! Check the console for details.");
-  };
-
-  // const handleMakePayments = () => {
-  //   // In a real application, this would trigger the payment process
-  //   alert("Salary payments initiated for all employees!");
-  // };
-
   const handleMakePayments = () => {
     setPaymentModalOpen(true);
   };
 
   const handlePaymentTypeSelect = (type) => {
     setPaymentType(type);
+    setSelectedEmployee(null);
   };
 
   const handleEmployeeSelect = (event) => {
@@ -383,7 +372,6 @@ const PayrollModule = () => {
     const employee = employees.find((emp) => emp.id === employeeId);
     setSelectedEmployee(employee);
   };
-
   const handleProcessPayment = () => {
     if (paymentType === "mass") {
       // Process mass payment logic here
@@ -396,6 +384,7 @@ const PayrollModule = () => {
     setPaymentType("");
     setSelectedEmployee(null);
   };
+
   return (
     <>
       <div className="flex h-screen">
@@ -422,6 +411,14 @@ const PayrollModule = () => {
                 <CardTitle className="text-2xl">Payroll Information</CardTitle>
               </CardHeader>
               <CardContent>
+                <div className="mb-4">
+                  <Input
+                    type="text"
+                    placeholder="Search by employee name or position"
+                    value={searchTerm}
+                    onChange={handleSearchInputChange}
+                  />
+                </div>
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse">
                     <thead>
@@ -460,7 +457,7 @@ const PayrollModule = () => {
                           <td className="border p-2">{entry.overtime} hrs</td>
                           <td className="border p-2">{entry.leave} days</td>
                           <td className="border p-2">
-                            {calculateNetPay(entry).toLocaleString()}
+                            {calculateNetSalary(entry)}
                           </td>
                           <td className="border p-2">
                             <Button
@@ -477,7 +474,11 @@ const PayrollModule = () => {
                   </table>
                 </div>
                 <Button
-                  onClick={() => generateAndDownloadExcel(payrollData)}
+                  onClick={() =>
+                    generateAndDownloadExcel(
+                      searchTerm === "" ? payrollData : filteredPayrollData
+                    )
+                  }
                   className="bg-blue-500 text-white mt-4"
                 >
                   <Download className="mr-2" />
@@ -494,290 +495,12 @@ const PayrollModule = () => {
                   <Button onClick={handleMakePayments}>
                     Make Salary Payments
                   </Button>
-                  {/* <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="bg-gray-100">
-                          <th className="border p-2 text-left">Name</th>
-                          <th className="border p-2 text-left">
-                            Gross Salary (KES)
-                          </th>
-                          <th className="border p-2 text-left">PAYE (KES)</th>
-                          <th className="border p-2 text-left">
-                            Insurance (KES)
-                          </th>
-                          <th className="border p-2 text-left">NHIF (KES)</th>
-                          <th className="border p-2 text-left">NSSF (kes)</th>
-                          <th className="border p-2 text-left">
-                            Net Salary (kes)
-                          </th>
-                          <th className="border p-2 text-left">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {employees.map((employee) => (
-                          <tr key={employee.id} className="hover:bg-gray-50">
-                            <td className="border p-2">{employee.name}</td>
-                            <td className="border p-2">
-                              {employee.grossSalary.toLocaleString()}
-                            </td>
-                            <td className="border p-2">
-                              {employee.paye.toLocaleString()}
-                            </td>
-                            <td className="border p-2">
-                              {employee.insurance.toLocaleString()}
-                            </td>
-                            <td className="border p-2">
-                              {employee.nhifDeduction.toLocaleString()}
-                            </td>
-                            <td className="border p-2">
-                              {employee.nssfDeduction.toLocaleString()}
-                            </td>
-                            <td className="border p-2">
-                              {calculateNetSalary(employee).toLocaleString()}
-                            </td>
-                            <td className="border p-2">
-                              <Button
-                                onClick={() => handlePrintPayslip(employee)}
-                                size="sm"
-                              >
-                                Print Payslip
-                              </Button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div> */}
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
       </div>
-
-      <Modal isOpen={editModalOpen} onClose={() => setEditModalOpen(false)}>
-        {currentEntry && (
-          <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold">Edit Payroll Entry</h2>
-                  <Button
-                    onClick={() => setEditModalOpen(false)}
-                    variant="ghost"
-                    className="p-1"
-                  >
-                    <X className="h-6 w-6" />
-                  </Button>
-                </div>
-              </div>
-              <div className="px-6 py-4 space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="editName">Name</Label>
-                  <Input
-                    id="editName"
-                    name="name"
-                    disabled
-                    value={currentEntry.name}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editPosition">Position</Label>
-                  <Input
-                    id="editPosition"
-                    disabled
-                    name="position"
-                    value={currentEntry.position}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        position: e.target.value,
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editSalary">Salary (KES)</Label>
-                  <Input
-                    id="editSalary"
-                    name="salary"
-                    type="number"
-                    value={currentEntry.salary}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        salary: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editBonus">Bonus (KES)</Label>
-                  <Input
-                    id="editBonus"
-                    name="bonus"
-                    type="number"
-                    value={currentEntry.bonus}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        bonus: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editTaxDeduction">Tax Deduction (KES)</Label>
-                  <Input
-                    id="editTaxDeduction"
-                    name="tax"
-                    type="number"
-                    value={currentEntry.deductions.tax}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        deductions: {
-                          ...prev.deductions,
-                          tax: Number(e.target.value),
-                        },
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editInsuranceDeduction">
-                    Insurance Deduction (KES)
-                  </Label>
-                  <Input
-                    id="editInsuranceDeduction"
-                    name="insurance"
-                    type="number"
-                    value={currentEntry.deductions.insurance}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        deductions: {
-                          ...prev.deductions,
-                          insurance: Number(e.target.value),
-                        },
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editOtherDeduction">
-                    Other Deductions (KES)
-                  </Label>
-                  <Input
-                    id="editOtherDeduction"
-                    name="other"
-                    type="number"
-                    value={currentEntry.deductions.other}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        deductions: {
-                          ...prev.deductions,
-                          other: Number(e.target.value),
-                        },
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editOvertime">Overtime Hours</Label>
-                  <Input
-                    id="editOvertime"
-                    name="overtime"
-                    type="number"
-                    value={currentEntry.overtime}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        overtime: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editOvertimeRate">
-                    Overtime Rate (KES/hour)
-                  </Label>
-                  <Input
-                    id="editOvertimeRate"
-                    name="overtimeRate"
-                    type="number"
-                    value={currentEntry.overtimeRate}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        overtimeRate: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editLeave">Leave Days</Label>
-                  <Input
-                    id="editLeave"
-                    name="leave"
-                    type="number"
-                    value={currentEntry.leave}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        leave: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editJoinDate">Join Date</Label>
-                  <Input
-                    id="editJoinDate"
-                    name="joinDate"
-                    disabled
-                    type="date"
-                    value={currentEntry.joinDate}
-                    onChange={(e) =>
-                      setCurrentEntry((prev) => ({
-                        ...prev,
-                        joinDate: e.target.value,
-                      }))
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-              </div>
-              <div className="sticky bottom-0 bg-white z-10 px-6 py-4 border-t">
-                <Button
-                  onClick={handleUpdate}
-                  className="w-full bg-green-500 text-white"
-                >
-                  Save Changes
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </Modal>
       <Modal
         isOpen={paymentModalOpen}
         onClose={() => setPaymentModalOpen(false)}
@@ -871,26 +594,80 @@ const PayrollModule = () => {
                 </div>
               </div>
               {paymentType === "individual" && (
-                <motion.div
-                  className="space-y-2"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                >
-                  <Label htmlFor="employeeSelect">Select Employee</Label>
-                  <Select
-                    id="employeeSelect"
-                    value={selectedEmployee ? selectedEmployee.id : ""}
-                    onChange={handleEmployeeSelect}
+                <>
+                  <motion.div
+                    className="space-y-2"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
                   >
-                    <option value="">Select an employee</option>
-                    {employees.map((employee) => (
-                      <option key={employee.id} value={employee.id}>
-                        {employee.name}
-                      </option>
-                    ))}
-                  </Select>
-                </motion.div>
+                    <Label htmlFor="employeeSelect">Search Employee</Label>
+                    <div className="mb-4">
+                      <Input
+                        type="text"
+                        placeholder="Search by employee name or position"
+                        value={searchTerm}
+                        onChange={handleSearchInputChange}
+                      />
+                    </div>
+                  </motion.div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border p-2 text-left">Name</th>
+                          <th className="border p-2 text-left">Position</th>
+                          {/* <th className="border p-2 text-left">
+                            Gross Salary (KES)
+                          </th> */}
+                          {/* <th className="border p-2 text-left">Bonus (KES)</th>
+                          <th className="border p-2 text-left">
+                            Deductions (KES)
+                          </th>
+                          <th className="border p-2 text-left">Overtime</th>
+                          <th className="border p-2 text-left">Leave</th>
+                          <th className="border p-2 text-left">
+                            Net Pay (KES)
+                          </th> */}
+                          <th className="border p-2 text-left">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredPayrollData.map((entry) => (
+                          <tr key={entry.id} className="hover:bg-gray-50">
+                            <td className="border p-2">{entry.name}</td>
+                            <td className="border p-2">{entry.position}</td>
+                            {/* <td className="border p-2">
+                              {entry.grossSalary.toLocaleString()}
+                            </td>
+                            <td className="border p-2">
+                              {entry.bonus.toLocaleString()}
+                            </td>
+                            <td className="border p-2">
+                              {Object.values(entry.deductions)
+                                .reduce((a, b) => a + b, 0)
+                                .toLocaleString()}
+                            </td>
+                            <td className="border p-2">{entry.overtime} hrs</td>
+                            <td className="border p-2">{entry.leave} days</td>
+                            <td className="border p-2">
+                              {calculateNetSalary(entry)}
+                            </td> */}
+                            <td className="border p-2">
+                              <Button
+                                variant="outline"
+                                className="text-blue-500 border-blue-500 hover:bg-blue-100"
+                                onClick={() => handleEditClick(entry)}
+                              >
+                                Select
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
               )}
             </div>
             <div className="sticky bottom-0 bg-white z-10 px-6 py-4 border-t">

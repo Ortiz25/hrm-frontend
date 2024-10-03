@@ -12,6 +12,10 @@ import Onboarding from "./pages/Onboarding.jsx";
 import HRDocumentModule from "./pages/Hrdocuments.jsx";
 import ProfilePage from "./pages/profilePage.jsx";
 import EmployeeDashboard from "./pages/EmployeeDash.jsx";
+import Perfomance from "./pages/Performance.jsx";
+import HolidayCalendar from "./pages/HolidayCalender.jsx";
+import HRMSAttendanceModule from "./pages/Attendance.jsx";
+import WarningPage from "./pages/Warning.jsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +47,14 @@ const router = createBrowserRouter([
     element: <DisciplinaryModule />,
   },
   {
+    path: "/warnings",
+    element: <WarningPage />,
+  },
+  {
+    path: "/attendance",
+    element: <HRMSAttendanceModule />,
+  },
+  {
     path: "/admin",
     element: <AdminSettingsModule />,
   },
@@ -53,6 +65,14 @@ const router = createBrowserRouter([
   {
     path: "/onboarding",
     element: <Onboarding />,
+  },
+  {
+    path: "/calender",
+    element: <HolidayCalendar />,
+  },
+  {
+    path: "/performance",
+    element: <Perfomance />,
   },
   {
     path: "/hrdocs",

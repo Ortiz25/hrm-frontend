@@ -15,7 +15,7 @@ export const generateAndDownloadExcel = (initialPayrollData) => {
     ...initialPayrollData.map((entry) => [
       entry.name,
       entry.position,
-      entry.salary,
+      entry.grossSalary,
       entry.bonus,
       entry.deductions,
       entry.salary + entry.bonus - entry.deductions, // Net Pay

@@ -53,7 +53,7 @@ const HRDocumentModule = () => {
   );
 
   useEffect(() => {
-    changeModule("HR Document Management");
+    changeModule("HR Documents");
   }, []);
 
   // Handle file upload
@@ -155,12 +155,24 @@ const HRDocumentModule = () => {
             <h2 className="text-xl font-semibold">Upload Document</h2>
             <div className="space-y-4 mt-4">
               <input type="file" onChange={handleFileUpload} />
-              <Button
-                onClick={handleUploadSubmit}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md"
+              <select
+                name="Document"
+                className="inline-block w-2\4 border border-gray-300 p-2 ml-2 "
               >
-                Upload
-              </Button>
+                {documentTypes.map((doc, index) => (
+                  <option key={index} value={doc.type}>
+                    {doc.type}
+                  </option>
+                ))}
+              </select>
+              <div>
+                <Button
+                  onClick={handleUploadSubmit}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md"
+                >
+                  Upload
+                </Button>
+              </div>
             </div>
           </div>
 

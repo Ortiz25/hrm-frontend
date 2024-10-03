@@ -27,7 +27,7 @@ const initialStaffData = [
     workSchedule: "Full-time",
     reason:
       "Need for a project manager to streamline cross-department projects",
-    status: "Pending",
+    status: "Accepted",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const initialStaffData = [
     department: "Analytics",
     workSchedule: "Part-time",
     reason: "Data analysis support needed to improve decision-making processes",
-    status: "Pending",
+    status: "Rejected",
   },
   {
     id: 5,
@@ -224,18 +224,24 @@ const StaffManagementModule = () => {
                       <div className="px-2 truncate">{staff.reason}</div>
                       <div className="px-2 truncate">{staff.status}</div>
                       <div className="px-2 flex flex-col sm:flex-row gap-2">
-                        <Button
-                          onClick={() => handleAcceptRequisition(staff)}
-                          className="bg-green-500 text-white px-2 py-1 rounded-md hover:bg-green-600 text-xs sm:text-sm"
-                        >
-                          Accept
-                        </Button>
-                        <Button
-                          onClick={() => handleDenyRequisition(staff)}
-                          className="bg-red-600 text-white px-2 py-1 rounded-md hover:bg-red-700 text-xs sm:text-sm"
-                        >
-                          Deny
-                        </Button>
+                        {staff.status === "Pending" ? (
+                          <>
+                            <Button
+                              onClick={() => handleAcceptRequisition(staff)}
+                              className="bg-green-500 text-white px-2 py-1 rounded-md hover:bg-green-600 text-xs sm:text-sm"
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              onClick={() => handleDenyRequisition(staff)}
+                              className="bg-red-600 text-white px-2 py-1 rounded-md hover:bg-red-700 text-xs sm:text-sm"
+                            >
+                              Deny
+                            </Button>
+                          </>
+                        ) : (
+                          "Closed"
+                        )}
                       </div>
                     </div>
                   ))}
