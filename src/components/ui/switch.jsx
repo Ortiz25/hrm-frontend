@@ -14,7 +14,7 @@ export const Switch = ({
       id={id}
       checked={checked}
       onChange={(e) => onCheckedChange(e.target.checked)}
-      className="sr-only"
+      className="sr-only p-2"
       {...props}
     />
     <div
