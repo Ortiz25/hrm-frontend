@@ -26,7 +26,9 @@ import SidebarLayout from "../components/layout/sidebarLayout";
 import { useStore } from "../store/store";
 import Modal from "../components/ui/modal";
 import { generateAndDownloadExcel } from "../util/generateXL";
-import { motion } from "framer-motion";
+
+import { motion, AnimatePresence } from "framer-motion";
+
 const initialPayrollData = [
   {
     id: 2,
@@ -326,6 +328,10 @@ const PayrollModule = () => {
     setEditModalOpen(true);
   };
 
+  const handleSelectClick = (entry) => {
+    setCurrentEntry(entry);
+  };
+
   const handleUpdate = () => {
     setPayrollData((prev) =>
       prev.map((item) => (item.id === currentEntry.id ? currentEntry : item))
@@ -617,18 +623,7 @@ const PayrollModule = () => {
                         <tr className="bg-gray-100">
                           <th className="border p-2 text-left">Name</th>
                           <th className="border p-2 text-left">Position</th>
-                          {/* <th className="border p-2 text-left">
-                            Gross Salary (KES)
-                          </th> */}
-                          {/* <th className="border p-2 text-left">Bonus (KES)</th>
-                          <th className="border p-2 text-left">
-                            Deductions (KES)
-                          </th>
-                          <th className="border p-2 text-left">Overtime</th>
-                          <th className="border p-2 text-left">Leave</th>
-                          <th className="border p-2 text-left">
-                            Net Pay (KES)
-                          </th> */}
+
                           <th className="border p-2 text-left">Actions</th>
                         </tr>
                       </thead>
@@ -637,27 +632,12 @@ const PayrollModule = () => {
                           <tr key={entry.id} className="hover:bg-gray-50">
                             <td className="border p-2">{entry.name}</td>
                             <td className="border p-2">{entry.position}</td>
-                            {/* <td className="border p-2">
-                              {entry.grossSalary.toLocaleString()}
-                            </td>
-                            <td className="border p-2">
-                              {entry.bonus.toLocaleString()}
-                            </td>
-                            <td className="border p-2">
-                              {Object.values(entry.deductions)
-                                .reduce((a, b) => a + b, 0)
-                                .toLocaleString()}
-                            </td>
-                            <td className="border p-2">{entry.overtime} hrs</td>
-                            <td className="border p-2">{entry.leave} days</td>
-                            <td className="border p-2">
-                              {calculateNetSalary(entry)}
-                            </td> */}
+
                             <td className="border p-2">
                               <Button
                                 variant="outline"
                                 className="text-blue-500 border-blue-500 hover:bg-blue-100"
-                                onClick={() => handleEditClick(entry)}
+                                onClick={() => handleSelectClick(entry)}
                               >
                                 Select
                               </Button>
@@ -683,6 +663,251 @@ const PayrollModule = () => {
               </Button>
             </div>
           </motion.div>
+        </motion.div>
+      </Modal>
+      <Modal isOpen={editModalOpen} onClose={() => setEditModalOpen(false)}>
+        <motion.div
+          initial={{ scale: 0.9, y: 20 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.9, y: 20 }}
+        >
+          {/* Modal Header */}
+          <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold">Edit Payroll Entry</h2>
+              <Button
+                onClick={() => setEditModalOpen(false)}
+                variant="ghost"
+                className="p-1"
+                aria-label="Close Edit Modal"
+              >
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Modal Content */}
+          <div className="px-6 py-4 space-y-4 overflow-y-auto max-h-[60vh] scrollbar-hide">
+            {/* Name Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editName">Name</Label>
+              <Input
+                id="editName"
+                name="name"
+                disabled
+                value={currentEntry?.name}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Position Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editPosition">Position</Label>
+              <Input
+                id="editPosition"
+                disabled
+                name="position"
+                value={currentEntry?.position}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    position: e.target.value,
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Salary Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editSalary">Salary (KES)</Label>
+              <Input
+                id="editSalary"
+                name="salary"
+                type="number"
+                value={currentEntry?.salary}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    salary: Number(e.target.value),
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Bonus Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editBonus">Bonus (KES)</Label>
+              <Input
+                id="editBonus"
+                name="bonus"
+                type="number"
+                value={currentEntry?.bonus}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    bonus: Number(e.target.value),
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Tax Deduction Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editTaxDeduction">Tax Deduction (KES)</Label>
+              <Input
+                id="editTaxDeduction"
+                name="tax"
+                type="number"
+                value={currentEntry?.deductions.tax}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    deductions: {
+                      ...prev.deductions,
+                      tax: Number(e.target.value),
+                    },
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Insurance Deduction Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editInsuranceDeduction">
+                Insurance Deduction (KES)
+              </Label>
+              <Input
+                id="editInsuranceDeduction"
+                name="insurance"
+                type="number"
+                value={currentEntry?.deductions.insurance}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    deductions: {
+                      ...prev.deductions,
+                      insurance: Number(e.target.value),
+                    },
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Other Deductions Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editOtherDeduction">Other Deductions (KES)</Label>
+              <Input
+                id="editOtherDeduction"
+                name="other"
+                type="number"
+                value={currentEntry?.deductions.other}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    deductions: {
+                      ...prev.deductions,
+                      other: Number(e.target.value),
+                    },
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Overtime Hours Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editOvertime">Overtime Hours</Label>
+              <Input
+                id="editOvertime"
+                name="overtime"
+                type="number"
+                value={currentEntry?.overtime}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    overtime: Number(e.target.value),
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Overtime Rate Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editOvertimeRate">Overtime Rate (KES/hour)</Label>
+              <Input
+                id="editOvertimeRate"
+                name="overtimeRate"
+                type="number"
+                value={currentEntry?.overtimeRate}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    overtimeRate: Number(e.target.value),
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Leave Days Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editLeave">Leave Days</Label>
+              <Input
+                id="editLeave"
+                name="leave"
+                type="number"
+                value={currentEntry?.leave}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    leave: Number(e.target.value),
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Join Date Field */}
+            <div className="space-y-2">
+              <Label htmlFor="editJoinDate">Join Date</Label>
+              <Input
+                id="editJoinDate"
+                name="joinDate"
+                disabled
+                type="date"
+                value={currentEntry?.joinDate}
+                onChange={(e) =>
+                  setCurrentEntry((prev) => ({
+                    ...prev,
+                    joinDate: e.target.value,
+                  }))
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+          </div>
+
+          {/* Modal Footer */}
+          <div className="sticky bottom-0 bg-white z-10 px-6 py-4 border-t">
+            <Button
+              onClick={handleUpdate}
+              className="w-full bg-green-500 text-white"
+            >
+              Save Changes
+            </Button>
+          </div>
         </motion.div>
       </Modal>
     </>
