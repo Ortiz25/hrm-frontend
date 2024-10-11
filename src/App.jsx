@@ -16,6 +16,7 @@ import Perfomance from "./pages/Performance.jsx";
 import HolidayCalendar from "./pages/HolidayCalender.jsx";
 import HRMSAttendanceModule from "./pages/Attendance.jsx";
 import WarningPage from "./pages/Warning.jsx";
+import LeaveDashboard from "./pages/LeaveDash.jsx";
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
   {
     path: "/hrdocs",
     element: <HRDocumentModule />,
+  },
+  {
+    path: "/leavedash",
+    element: <LeaveDashboard />,
   },
   {
     path: "/profile",

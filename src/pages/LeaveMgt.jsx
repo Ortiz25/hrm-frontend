@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu, Calendar } from "lucide-react";
+import { Menu, Calendar, CalendarRange, TextSelect } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -206,6 +206,13 @@ const LeaveManagementModule = () => {
           <Button variant="ghost" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <Menu />
           </Button>
+          <NavLink
+            to="/leavedash"
+            className=" border p-2  rounded shadow-lg hover:bg-slate-200"
+          >
+            <TextSelect className="inline size-8 mr-2 text-green-500 mb-2" />
+            <span className="font-semibold text-lg ">Leave Dash</span>
+          </NavLink>
           <NavLink
             to="/calender"
             className=" border p-2  rounded shadow-lg hover:bg-slate-200"
