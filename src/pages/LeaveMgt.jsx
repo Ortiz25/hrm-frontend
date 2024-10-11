@@ -365,6 +365,17 @@ const LeaveManagementModule = () => {
                       required
                     />
                   </div>
+                  <div>
+                    <Label>Covering Employee</Label>
+                    <Input
+                      type="text"
+                      name="coverEmployee"
+                      value={newLeave.days}
+                      onChange={handleInputChange}
+                      placeholder="Enter Name of Covering Employee"
+                      required
+                    />
+                  </div>
                 </div>
                 <Button
                   type="submit"
